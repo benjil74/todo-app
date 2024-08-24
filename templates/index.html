@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% include "header.html" %}
+{% block title %}My To Do List{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-4">To Do List</h1>
+    <p>{{ list.list_name }} - {{ current_user.name }}</p>
+      <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form_div">
+        {{ form.to_do.label }}</div>  <div class="form_div">{{ form.to_do(class_="form-control") }}
+    </div>
+    <div class="form_div">
+        {{ form.date_to_do(class_="form-control") }}
+    </div>
+    <div>
+        {{ form.submit(class_="btn btn-primary") }}
+    </div>
+</form>
+<hr class="my-4" />
+    <ul class="list-group">
+        {% for todo in todos %}
+        {% if not todo.erased %}
+        <li class="todo-item list-group-item">
+             <form action="{{ url_for('done_todo', todo_id=todo.id, list_id=list.id) }}" method="POST">
+            <label class="color-tag hint hint--bottom" style="background-color: {{ todo.color }};" title="Check task">
+                <input type="checkbox" onchange="this.form.submit()">
+            </label>
+        </form>
+
+        {{ todo.name }} - {{ todo.date }}
+         <form action="{{ url_for('change_color', todo_id=todo.id, list_id=list.id) }}" method="POST" style="margin-left: 10px;" class="hint hint--bottom"  title="Choose color">
+            <select class="form-select" name="color" onchange="this.form.submit()">
+                <option value="grey" {% if todo.color == 'grey' %} selected {% endif %} > Grey</option>
+                <option value="red" {% if todo.color == 'red' %} selected {% endif %}>Red</option>
+                <option value="green" {% if todo.color == 'green' %} selected {% endif %}>Green</option>
+                <option value="blue" {% if todo.color == 'blue' %} selected {% endif %}>Blue</option>
+                <option value="yellow" {% if todo.color == 'yellow' %} selected {% endif %}>Yellow</option>
+                <option value="purple" {% if todo.color == 'purple' %} selected {% endif %}>Purple</option>
+                <option value="orange" {% if todo.color == 'orange' %} selected {% endif %}>Orange</option>
+            </select>
+        </form>
+            <label class="hint hint--bottom"  title="Delete Task">
+                                            <a href="{{ url_for('delete', id=todo.id, list_id=list.id) }}" style="margin-left: 10px;"><i class="bi bi-x-lg"></i> </a>
+</label>
+
+            </li>
+        {% else %}
+        <li  class="todo-item list-group-item">
+
+         <form  action="{{ url_for('undo', todo_id=todo.id, list_id=list.id) }}" method="POST" >
+            <label class="color-tag hint hint--bottom" title="Uncheck task" style="background-color: {{ todo.color }};">
+                <input type="checkbox" onchange="this.form.submit()">
+                <span class="checkmark"></span>
+            </label>
+        </form>
+        <span style="text-decoration: line-through">{{ todo.name }} - {{ todo.date }}</span>
+            <a href="{{ url_for('delete', id=todo.id) }}"  style="margin-left: 10px;" class="hint hint--bottom"  title="Delete Task"><i class="bi bi-x-lg"></i> </a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+      <div><a href="{{ url_for('saved_lists') }}">Your lists</a></div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% include "header.html" %}
+{% block title %}My To Do List{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-4">All my To Do Lists</h1>
+
+
+<hr class="my-4" />
+    <ul class="list-group">
+        {% for list in lists %}
+        <li class="todo-item list-group-item">
+
+
+       <a href="{{ url_for('home_lists', list_id=list.id) }}">{{ list.list_name }}</a>
+        <label class="hint hint--bottom"  title="Delete List">
+                                            <a href="{{ url_for('delete_list', id=list.id) }}" style="margin-left: 10px;"><i class="bi bi-x-lg"></i> </a>
+</label>
+            </li>
+      {% endfor %}
+        <form action="{{ url_for('home') }}">
+        <button class="btn btn-primary" type="submit">Add a new list</button>
+            </form>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
